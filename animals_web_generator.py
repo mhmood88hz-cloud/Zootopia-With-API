@@ -19,4 +19,5 @@ for i in range(len(animals_data)):
   try:
     print(f"Type: {animals_data[i]["characteristics"]["type"]}")
   except KeyError:
+
     pass
