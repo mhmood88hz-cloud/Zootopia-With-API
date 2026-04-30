@@ -11,19 +11,29 @@ def load_data(file_path):
 
 
 animals_data = load_data("animals_data.json")
-output = ""
-for i in range(len(animals_data)):
+def serialize_animal():
+  output = ""
   output += '<li class="cards__item">'
-  output += f'<div class="card__title">{animals_data[i]["name"]}</div>'
-  output += f'<p class="card__text">'
-  output += f"Diet: {animals_data[i]["characteristics"]['diet']}<br/>"
-  output += f"Location: {", ".join(animals_data[i]["locations"])}<br/>"
+  output += f'<div class="card__title">{animals_obj["name"]}</div><br/>'
+
+  output += f'<div class="card__text">'
+  output += f'<ul>'
+  output += f"<li><strong>Diet: {animals_obj["characteristics"]['diet']}</li></strong><br/>"
+  output += f"<li><strong>Location: {", ".join(animals_obj["locations"])}</li></strong><br/>"
   try:
-    output += f"Type: {animals_data[i]["characteristics"]["type"]}<br/>"
+    output += f"<li><strong>Type: {animals_obj["characteristics"]["type"]}</li></strong><br/>"
   except KeyError:
     pass
-  output += f"</p>"
-  output += "</i>"
+  output += f"</ul>"
+  output += f"</div>"
+  output += "</li>"
+  output += "</li>"
+  return output
+
+output = ""
+for animals_obj in animals_data:
+  output += serialize_animal()
+
 with open("animals_template.html", "r") as file:
   html_comment = file.read()
 new_html = html_comment.replace("{{animals_data}}", output)
