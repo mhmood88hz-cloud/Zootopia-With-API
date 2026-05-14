@@ -50,8 +50,11 @@ def serialize_animal(animals_obj):
 animals_input = input("Enter animal name: ").strip().lower()
 
 animals_data = load_data(animals_input)
+if not animals_data:
+    output = f"<h2>The animal '{animals_input}' doesn't exist.</h2>"
+else:
+    output = ""
 
-output = ""
 
 for animals_obj in animals_data:
     output += serialize_animal(animals_obj)
