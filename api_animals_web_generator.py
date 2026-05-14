@@ -1,18 +1,4 @@
-import requests
-
-API_KEY = "plyPimnA2MNAWv7ULhuqD8BQVc4tjcM3sQAzEqYR"
-
-
-def load_data(animal_name):
-    url = f"https://api.api-ninjas.com/v1/animals?name={animal_name}"
-
-    headers = {
-        "X-Api-Key": API_KEY
-    }
-
-    response = requests.get(url, headers=headers)
-
-    return response.json()
+import data_fetcher
 
 
 def serialize_animal(animals_obj):
@@ -49,15 +35,17 @@ def serialize_animal(animals_obj):
 
 animals_input = input("Enter animal name: ").strip().lower()
 
-animals_data = load_data(animals_input)
+animals_data = data_fetcher.fetch_data(animals_input)
+
 if not animals_data:
     output = f"<h2>The animal '{animals_input}' doesn't exist.</h2>"
+
 else:
     output = ""
 
+    for animals_obj in animals_data:
+        output += serialize_animal(animals_obj)
 
-for animals_obj in animals_data:
-    output += serialize_animal(animals_obj)
 
 with open("animals_template.html", "r", encoding="utf-8") as file:
     html_template = file.read()
