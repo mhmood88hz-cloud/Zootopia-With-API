@@ -1,6 +1,8 @@
+import dotenv
 import requests
 import os
 from dotenv import load_dotenv
+from pygments.lexers import python
 
 load_dotenv()
 API_KEY = os.getenv('API_KEY')
