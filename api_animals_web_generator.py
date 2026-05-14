@@ -8,9 +8,9 @@ def load_data(file_path):
   """ Loads a JSON file """
   with open(file_path, "r") as handle:
     return json.load(handle)
-#MM
 
 animals_data = load_data("animals_data.json")
+
 def serialize_animal():
   output = ""
   output += '<li class="cards__item">'
@@ -30,9 +30,11 @@ def serialize_animal():
   output += "</li>"
   return output
 
+animals_input = input("Enter animal name: ").strip().lower()
 output = ""
 for animals_obj in animals_data:
-  output += serialize_animal()
+  if animals_input in animals_obj["name"].lower():
+    output += serialize_animal()
 
 with open("animals_template.html", "r") as file:
   html_comment = file.read()
