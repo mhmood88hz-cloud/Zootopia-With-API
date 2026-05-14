@@ -1,44 +1,67 @@
-import json
+import requests
 
-from pydantic_core.core_schema import dataclass_args_schema
-from pyparsing import html_comment
+API_KEY = "plyPimnA2MNAWv7ULhuqD8BQVc4tjcM3sQAzEqYR"
 
 
-def load_data(file_path):
-  """ Loads a JSON file """
-  with open(file_path, "r") as handle:
-    return json.load(handle)
+def load_data(animal_name):
+    url = f"https://api.api-ninjas.com/v1/animals?name={animal_name}"
 
-animals_data = load_data("animals_data.json")
+    headers = {
+        "X-Api-Key": API_KEY
+    }
 
-def serialize_animal():
-  output = ""
-  output += '<li class="cards__item">'
-  output += f'<div class="card__title">{animals_obj["name"]}</div><br/>'
+    response = requests.get(url, headers=headers)
 
-  output += f'<div class="card__text">'
-  output += f'<ul>'
-  output += f"<li><strong>Diet: {animals_obj["characteristics"]['diet']}</li></strong><br/>"
-  output += f"<li><strong>Location: {", ".join(animals_obj["locations"])}</li></strong><br/>"
-  try:
-    output += f"<li><strong>Type: {animals_obj["characteristics"]["type"]}</li></strong><br/>"
-  except KeyError:
-    pass
-  output += f"</ul>"
-  output += f"</div>"
-  output += "</li>"
-  output += "</li>"
-  return output
+    return response.json()
+
+
+def serialize_animal(animals_obj):
+
+    output = ""
+
+    output += '<li class="cards__item">'
+    output += f'<div class="card__title">{animals_obj["name"]}</div><br/>'
+
+    output += '<div class="card__text">'
+    output += '<ul>'
+
+    try:
+        output += f'<li><strong>Diet:</strong> {animals_obj["characteristics"]["diet"]}</li><br/>'
+    except KeyError:
+        pass
+
+    try:
+        output += f'<li><strong>Location:</strong> {", ".join(animals_obj["locations"])}</li><br/>'
+    except KeyError:
+        pass
+
+    try:
+        output += f'<li><strong>Type:</strong> {animals_obj["characteristics"]["type"]}</li><br/>'
+    except KeyError:
+        pass
+
+    output += "</ul>"
+    output += "</div>"
+    output += "</li>"
+
+    return output
+
 
 animals_input = input("Enter animal name: ").strip().lower()
-output = ""
-for animals_obj in animals_data:
-  if animals_input in animals_obj["name"].lower():
-    output += serialize_animal()
 
-with open("animals_template.html", "r") as file:
-  html_comment = file.read()
-new_html = html_comment.replace("{{animals_data}}", output)
-new_html = new_html.replace("â€™", "'")
-with open("animals.html", "w") as file:
-  file.write(new_html)
+animals_data = load_data(animals_input)
+
+output = ""
+
+for animals_obj in animals_data:
+    output += serialize_animal(animals_obj)
+
+with open("animals_template.html", "r", encoding="utf-8") as file:
+    html_template = file.read()
+
+new_html = html_template.replace("{{animals_data}}", output)
+
+with open("animals.html", "w", encoding="utf-8") as file:
+    file.write(new_html)
+
+print("Website generated successfully!")
